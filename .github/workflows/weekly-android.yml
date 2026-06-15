@@ -1,0 +1,30 @@
+---
+name: Weekly Android (Termux Docker) Test
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  termux-docker-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pull Termux Docker image
+        run: docker pull termux/termux-docker:latest
+      - name: Run tests inside Termux container
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            termux/termux-docker:latest \
+            /bin/bash -c "
+              cd /workspace && \
+              pkg update -y && \
+              pkg install -y python python-pip && \
+              pip install pytest && \
+              if [ -f requirements.txt ]; then \
+                pip install -r requirements.txt; \
+              fi && \
+              pytest tests/ -v
+            "

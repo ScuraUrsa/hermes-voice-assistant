@@ -1,0 +1,132 @@
+# =============================================================================
+# Home Assistant Configuration — Hermes Voice Assistant
+# =============================================================================
+# Ten plik zawiera minimalną konfigurację Home Assistant z Assist Pipeline,
+# conversation agent wskazującym na Hermes API przez Open WebUI.
+#
+# Wymagane pliki:
+#   - secrets.yaml     (zawiera !secret openwebui_api_key)
+#   - conversations.yaml (definicja conversation agent)
+#
+# Instalacja:
+#   1. Skopiuj ten plik do /config/configuration.yaml w Home Assistant
+#   2. Skopiuj conversations.yaml do /config/
+#   3. Utwórz /config/secrets.yaml z treścią:
+#        openwebui_api_key: "sk-dowolny-klucz-xyz"
+#   4. Zrestartuj Home Assistant
+# =============================================================================
+
+# --- Podstawowa konfiguracja ---
+default_config:
+
+# --- Lokalizacja i strefa czasowa ---
+homeassistant:
+  name: "Hermes Home"
+  latitude: 52.2297
+  longitude: 21.0122
+  elevation: 100
+  unit_system: metric
+  time_zone: Europe/Warsaw
+  currency: PLN
+
+  # --- Pozwalamy na includowanie conversations.yaml ---
+  packages:
+    conversations: !include conversations.yaml
+
+# --- Frontend ---
+frontend:
+  themes: !include_dir_merge_named themes/
+
+# --- HTTP (nasłuchiwanie tylko przez Tailscale) ---
+http:
+  server_host: 0.0.0.0
+  server_port: 8123
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 127.0.0.1
+    - 100.64.0.0/10        # Tailscale subnet
+    - 10.0.0.0/8           # Lokalna sieć (opcjonalnie)
+  ip_ban_enabled: true
+  login_attempts_threshold: 5
+
+# --- Logger ---
+logger:
+  default: info
+  logs:
+    homeassistant.components.conversation: debug
+    homeassistant.components.assist_pipeline: debug
+
+# --- Assist Pipeline ---
+# Konfiguracja pipeline'u głosowego Assist
+assist_pipeline:
+
+  # --- Pipeline domyślny ---
+  - name: "Hermes Polish Pipeline"
+    id: hermes_pipeline_pl
+    stt_engine: wyoming_whisper       # Wyoming STT (Whisper)
+    tts_engine: wyoming_piper          # Wyoming TTS (Piper)
+    conversation_agent: hermes         # Agent zdefiniowany w conversations.yaml
+    language: pl
+    wake_word_entity: wake_word.openwakeword_hey_hermes  # (opcjonalnie)
+
+  # --- Pipeline angielski (fallback) ---
+  - name: "Hermes English Pipeline"
+    id: hermes_pipeline_en
+    stt_engine: wyoming_whisper
+    tts_engine: wyoming_piper
+    conversation_agent: hermes
+    language: en
+
+# --- Wyoming (lokalne STT/TTS) ---
+wyoming:
+  - name: "Wyoming Whisper (STT)"
+    host: localhost
+    port: 10300
+
+  - name: "Wyoming Piper (TTS)"
+    host: localhost
+    port: 10200
+
+# --- Wake Word (openWakeWord) ---
+# Wymaga: HACS + openWakeWord integration
+# Lub: Add-on "Wake Word Collection"
+openwakeword:
+  models:
+    - wake_word_hey_hermes: /config/wakewords/hey_hermes.tflite
+
+# --- Przykładowe automatyzacje (do uzupełnienia) ---
+automation:
+  - alias: "Assist - Włącz światło w salonie"
+    trigger:
+      - platform: conversation
+        command: ["włącz światło w salonie", "zapal światło w salonie"]
+    action:
+      service: light.turn_on
+      target:
+        entity_id: light.living_room
+      data: {}
+
+  - alias: "Assist - Wyłącz światło w salonie"
+    trigger:
+      - platform: conversation
+        command: ["wyłącz światło w salonie", "zgaś światło w salonie"]
+    action:
+      service: light.turn_off
+      target:
+        entity_id: light.living_room
+      data: {}
+
+# --- Przykładowe encje (do celów testowych) ---
+light:
+  - platform: demo
+    name: "Światło w salonie"
+    entity_id: light.living_room
+
+  - platform: demo
+    name: "Światło w kuchni"
+    entity_id: light.kitchen
+
+# --- Media Player (do odtwarzania TTS) ---
+media_player:
+  - platform: demo
+    name: "Głośnik salon"

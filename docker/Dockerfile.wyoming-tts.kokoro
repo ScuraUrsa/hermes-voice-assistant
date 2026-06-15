@@ -1,0 +1,36 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies required for audio processing and PyTorch
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    ffmpeg \
+    libsndfile1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PyTorch (CPU-only)
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
+
+# Install Kokoro TTS and Wyoming protocol dependencies
+RUN pip install --no-cache-dir \
+    kokoro>=0.7.0 \
+    fastapi>=0.110.0 \
+    uvicorn[standard]>=0.29.0 \
+    websockets>=12.0 \
+    numpy>=1.24.0 \
+    soundfile>=0.12.0 \
+    pydantic>=2.0.0
+
+# Copy server implementation
+COPY server.py /app/server.py
+
+# Wyoming TTS protocol port
+EXPOSE 10200
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
+    CMD curl -s http://localhost:10200/health || exit 1
+
+ENTRYPOINT ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "10200"]

@@ -1,0 +1,52 @@
+# =============================================================================
+# Conversations Configuration — Hermes Conversation Agent
+# =============================================================================
+# Definiuje conversation agent "hermes" który łączy się z Hermes API
+# przez Open WebUI jako OpenAI-kompatybilny endpoint.
+#
+# Użycie:
+#   Ten plik jest includowany przez configuration.yaml jako package.
+#   API key jest przechowywany w secrets.yaml jako:
+#     openwebui_api_key: "sk-..."
+# =============================================================================
+
+conversation:
+  - id: hermes
+    name: "Hermes Agent"
+    agent_id: hermes
+    language: pl
+
+    # --- OpenAI-kompatybilny provider ---
+    provider: openai
+
+    # --- API key z secrets.yaml ---
+    api_key: !secret openwebui_api_key
+
+    # --- URL do Open WebUI API ---
+    # Domyślnie: http://open-webui:3000/api/chat/completions
+    # Jeśli Open WebUI działa na innym hoście/z porcie, zmień poniższy URL
+    api_url: http://open-webui:3000/api/chat/completions
+
+    # --- Domyślny model ---
+    model: hermes-agent  # lub inny model dostępny w Open WebUI
+
+    # --- Parametry LLM ---
+    parameters:
+      temperature: 0.7
+      max_tokens: 512
+      top_p: 0.9
+
+    # --- Prompt systemowy dla asystenta głosowego ---
+    prompt: |
+      Jesteś Hermes — asystent głosowy w inteligentnym domu.
+      Mów naturalnym językiem, odpowiadaj zwięźle (maksymalnie 2-3 zdania).
+      Używaj języka polskiego.
+      Gdy użytkownik prosi o sterowanie urządzeniami, odpowiadaj potwierdzeniem
+      i krótkim opisem co robisz.
+      Nie generuj kodu, JSON ani znaczników formatowania — mów tylko naturalnym tekstem.
+
+    # --- Context (opcjonalnie) ---
+    context:
+      user_name: Użytkowniku
+      location: Warszawa
+      timezone: Europe/Warsaw

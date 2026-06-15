@@ -1,0 +1,64 @@
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: homeassistant
+    ports:
+      - "8123:8123"
+    volumes:
+      - ./config/home-assistant:/config
+    restart: unless-stopped
+    networks:
+      - hermes-voice
+
+  wyoming-whisper:
+    image: rhasspy/wyoming-whisper
+    container_name: wyoming-whisper
+    command: --model large-v3 --port 10300
+    ports:
+      - "10300:10300"
+    restart: unless-stopped
+    networks:
+      - hermes-voice
+
+  wyoming-piper:
+    image: rhasspy/wyoming-piper
+    container_name: wyoming-piper
+    command: --voice pl_PL-glow-tts --port 10200
+    ports:
+      - "10200:10200"
+    restart: unless-stopped
+    networks:
+      - hermes-voice
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - "3000:3000"
+    environment:
+      - OPENAI_API_BASE_URL=http://litellm:4000
+      - OPENAI_API_KEY=***
+    volumes:
+      - ./config/open-webui:/app/backend/data
+    depends_on:
+      - litellm
+    restart: unless-stopped
+    networks:
+      - hermes-voice
+
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: litellm
+    ports:
+      - "4000:4000"
+    environment:
+      - OPENAI_API_KEY=***
+      - LITELLM_MASTER_KEY=sk-master
+      - LITELLM_CONFIG_CONTENT={"model_list":[{"model_name":"gpt-4o-mini","litellm_params":{"model":"openai/gpt-4o-mini","api_key":"${OPENAI_API_KEY}"}},{"model_name":"whisper","litellm_params":{"model":"openai/whisper-1","api_key":"${OPENAI_API_KEY}"}}]}
+    restart: unless-stopped
+    networks:
+      - hermes-voice
+
+networks:
+  hermes-voice:
+    driver: bridge
