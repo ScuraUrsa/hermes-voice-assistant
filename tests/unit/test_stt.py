@@ -8,7 +8,12 @@ import pytest
 
 # Dummy classes for patching targets
 class WyomingSttClient:
-    pass
+    def __init__(self, host="localhost", port=10400, timeout=None, language=None):
+        self.host = host
+        self.port = port
+        self.uri = f"{host}:{port}"
+        self.timeout = timeout
+        self.language = language
 
 
 # ---------------------------------------------------------------------------

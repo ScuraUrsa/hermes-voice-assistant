@@ -8,7 +8,11 @@ import pytest
 
 # Dummy classes for patching targets
 class WyomingTtsClient:
-    pass
+    def __init__(self, host="localhost", port=10400, voice=None, speed=None):
+        self.host = host
+        self.port = port
+        self.voice = voice
+        self.speed = speed
 
 
 # ---------------------------------------------------------------------------
