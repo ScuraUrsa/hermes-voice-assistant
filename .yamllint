@@ -1,0 +1,10 @@
+---
+extends: default
+rules:
+  document-start:
+    level: error
+    present: true
+  line-length:
+    level: error
+    max: 120
+  truthy: disable

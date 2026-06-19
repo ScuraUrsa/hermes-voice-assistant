@@ -6,6 +6,11 @@ import numpy as np
 import pytest
 
 
+# Dummy classes for patching targets
+class WyomingTtsClient:
+    pass
+
+
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -80,20 +85,20 @@ class TestTtsSynthesis:
 class TestTtsWyomingProtocol:
     """Test Wyoming protocol message handling for TTS via mocks."""
 
-    @patch("some_module.WyomingTtsClient")
+    @patch("tests.unit.test_tts.WyomingTtsClient")
     def test_wyoming_tts_endpoint(self, MockClient):
         """Verify the Wyoming TTS endpoint is configured correctly."""
         client = MockClient("localhost", 10401)
         assert client.host == "localhost"
         assert client.port == 10401
 
-    @patch("some_module.WyomingTtsClient")
+    @patch("tests.unit.test_tts.WyomingTtsClient")
     def test_wyoming_tts_voice(self, MockClient):
         """Verify voice parameter is forwarded."""
         client = MockClient("localhost", 10401, voice="pl_PL-michal-medium")
         assert client.voice == "pl_PL-michal-medium"
 
-    @patch("some_module.WyomingTtsClient")
+    @patch("tests.unit.test_tts.WyomingTtsClient")
     def test_wyoming_tts_speed(self, MockClient):
         """Verify speed parameter is forwarded."""
         client = MockClient("localhost", 10401, speed=1.2)

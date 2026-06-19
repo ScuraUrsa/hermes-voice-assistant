@@ -1,3 +1,4 @@
+---
 services:
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:stable
@@ -54,7 +55,8 @@ services:
     environment:
       - OPENAI_API_KEY=***
       - LITELLM_MASTER_KEY=sk-master
-      - LITELLM_CONFIG_CONTENT={"model_list":[{"model_name":"gpt-4o-mini","litellm_params":{"model":"openai/gpt-4o-mini","api_key":"${OPENAI_API_KEY}"}},{"model_name":"whisper","litellm_params":{"model":"openai/whisper-1","api_key":"${OPENAI_API_KEY}"}}]}
+      - LITELLM_CONFIG_CONTENT=
+        {"model_list":[{"model_name":"gpt-4o-mini","litellm_params":{"model":"openai/gpt-4o-mini","api_key":"***"}},{"model_name":"whisper","litellm_params":{"model":"openai/whisper-1","api_key":"***"}}]}
     restart: unless-stopped
     networks:
       - hermes-voice

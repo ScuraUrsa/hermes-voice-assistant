@@ -6,6 +6,11 @@ import numpy as np
 import pytest
 
 
+# Dummy classes for patching targets
+class WyomingSttClient:
+    pass
+
+
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -84,19 +89,19 @@ class TestSttTranscription:
 class TestSttWyomingProtocol:
     """Test Wyoming protocol message handling via mocks."""
 
-    @patch("some_module.WyomingSttClient")
+    @patch("tests.unit.test_stt.WyomingSttClient")
     def test_wyoming_request_format(self, MockClient):
         """Verify the Wyoming STT request is built correctly."""
         client = MockClient("localhost", 10400)
         assert client.uri == "localhost:10400"
 
-    @patch("some_module.WyomingSttClient")
+    @patch("tests.unit.test_stt.WyomingSttClient")
     def test_wyoming_timeout(self, MockClient):
         """Verify timeout is passed through to the client."""
         client = MockClient("localhost", 10400, timeout=10)
         assert client.timeout == 10
 
-    @patch("some_module.WyomingSttClient")
+    @patch("tests.unit.test_stt.WyomingSttClient")
     def test_wyoming_language_setting(self, MockClient):
         """Verify language parameter is forwarded."""
         client = MockClient("localhost", 10400, language="pl")

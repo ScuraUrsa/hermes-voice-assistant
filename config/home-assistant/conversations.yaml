@@ -1,3 +1,4 @@
+---
 # =============================================================================
 # Conversations Configuration — Hermes Conversation Agent
 # =============================================================================
@@ -43,7 +44,8 @@ conversation:
       Używaj języka polskiego.
       Gdy użytkownik prosi o sterowanie urządzeniami, odpowiadaj potwierdzeniem
       i krótkim opisem co robisz.
-      Nie generuj kodu, JSON ani znaczników formatowania — mów tylko naturalnym tekstem.
+      Nie generuj kodu, JSON ani znaczników formatowania
+      — mów tylko naturalnym tekstem.
 
     # --- Context (opcjonalnie) ---
     context:

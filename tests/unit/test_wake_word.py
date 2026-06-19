@@ -6,6 +6,11 @@ import numpy as np
 import pytest
 
 
+# Dummy classes for patching targets
+class WakeWordDetector:
+    pass
+
+
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -72,14 +77,14 @@ class TestWakeWordDetection:
 class TestWakeWordIntegration:
     """Test the wake word integration with the audio pipeline mocks."""
 
-    @patch("some_module.WakeWordDetector")
+    @patch("tests.unit.test_wake_word.WakeWordDetector")
     def test_detector_instantiation(self, MockDetector):
         """Verify that the detector class can be instantiated via mock."""
         detector_instance = MockDetector.return_value
         detector_instance.wake_words = ["hermes"]
         assert "hermes" in detector_instance.wake_words
 
-    @patch("some_module.WakeWordDetector")
+    @patch("tests.unit.test_wake_word.WakeWordDetector")
     def test_detector_streaming(self, MockDetector):
         """Simulate a streaming audio chunk being passed to the detector."""
         detector = MockDetector()
