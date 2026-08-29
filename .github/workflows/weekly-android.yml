@@ -21,7 +21,7 @@ jobs:
             /data/data/com.termux/files/usr/bin/bash -c "
               cd /workspace && \
               pkg update -y && \
-              pkg install -y python python-pip && \
+              pkg install -y python python-pip python-numpy && \
               pip install pytest && \
               if [ -f requirements.txt ]; then \
                 pip install -r requirements.txt; \
