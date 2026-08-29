@@ -17,9 +17,8 @@ jobs:
         run: |
           docker run --rm \
             -v "${{ github.workspace }}:/workspace" \
-            --entrypoint /data/data/com.termux/files/usr/bin/bash \
             termux/termux-docker:latest \
-            -c "
+            /data/data/com.termux/files/usr/bin/bash -c "
               cd /workspace && \
               pkg update -y && \
               pkg install -y python python-pip && \
