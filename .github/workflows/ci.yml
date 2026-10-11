@@ -24,7 +24,7 @@ jobs:
         run: pytest tests/unit/
 
   integration-tests:
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_RUNS_ON || 'hermes' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -49,7 +49,7 @@ jobs:
         run: docker compose -f docker-compose.test.yml down -v
 
   quality-gates:
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_RUNS_ON || 'hermes' }}
     steps:
       - uses: actions/checkout@v4
       - name: Install yamllint

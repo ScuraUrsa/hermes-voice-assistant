@@ -8,7 +8,7 @@ on:
 
 jobs:
   termux-docker-test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_RUNS_ON || 'hermes' }}
     steps:
       - uses: actions/checkout@v4
       - name: Pull Termux Docker image
