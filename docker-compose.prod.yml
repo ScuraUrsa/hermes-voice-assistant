@@ -48,7 +48,7 @@ services:
       - hermes-voice
 
   litellm:
-    image: ghcr.io/berriai/litellm@sha256:3d88bd757134a00e8c00237b85a021ab1f6d54abb9c1df750f411dbe7256a500  # 1.104.2
+    image: ghcr.io/berriai/litellm@sha256:11175975a3093e05e92faee2fe2fe3412a3ae2fcaa849eb0fe25d5f0d8bcb2e9  # 1.104.2
     container_name: litellm
     ports:
       - "4000:4000"

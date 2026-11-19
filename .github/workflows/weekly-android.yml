@@ -10,7 +10,7 @@ jobs:
   termux-docker-test:
     runs-on: ${{ vars.CI_RUNS_ON || 'hermes' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Pull Termux Docker image
         run: docker pull termux/termux-docker:latest
       - name: Run tests inside Termux container
